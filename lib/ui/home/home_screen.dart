@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:glaxit_portal/constant/base_url.dart';
+import 'package:glaxit_portal/modals/dash_board.dart';
+import 'package:glaxit_portal/modals/user_login.dart';
 import 'package:glaxit_portal/ui/my%20attendance/my_attendance.dart';
 import 'package:glaxit_portal/widgets/attendance_card.dart';
 import 'package:glaxit_portal/widgets/checkin%20button/check_in_break.dart';
@@ -7,6 +12,8 @@ import 'package:glaxit_portal/widgets/my%20team%20memebers/my_team_member_card.d
 import 'package:glaxit_portal/widgets/real_time.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:dotted_decoration/dotted_decoration.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,70 +21,101 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
+  DashBoardData? homeData;
+  var data = {};
+  @override
+  void initState() {
+    super.initState();
+
+    getHomeData();
+  }
+
+  Future<List<DashBoardData>?> getHomeData() async {
+    try {
+      final response = await http.get(
+        Uri.parse('$APP_BASE_URL/get_home_data.php?em_id=3'),
+        headers: <String, String>{
+          'Accept': 'application/json',
+          'authorization': 'Bearer 8605c8a9bcd8914021369a887f164fad',
+          // HttpHeaders.authorizationHeader: '8605c8a9bcd8914021369a887f164fad',
+        },
+      );
+      if (response?.statusCode == 200) {
+        print('if is running');
+        final body = jsonDecode(response.body);
+        data = body['data'];
+        print(data);
+      }
+    } catch (e) {
+      print('Failed to load album');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffFCFDFF),
+        backgroundColor: const Color(0xffFCFDFF),
         body: SingleChildScrollView(
           child: Column(
             children: [
               Stack(
                 children: [
                   Container(
-                    height: MediaQuery.of(context).size.height * .3,
-                    color: Color(0xff2F80EC),
-            child: Container(
-              child: Row(
-                children: [
-                  Padding(
-                    padding:
-                    const EdgeInsets.only(bottom: 50, left: 20),
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage(
-                          'assets/images/profile image.jpg'),
-                      minRadius: 20,
-                      maxRadius: 30,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 60, left: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Mr. Amir',
-                          style: GoogleFonts.manrope(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(.8)),
+                      height: MediaQuery.of(context).size.height * .3,
+                      color: const Color(0xff2F80EC),
+                      child: Container(
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(bottom: 50, left: 20),
+                              child: CircleAvatar(
+                                // backgroundImage: AssetImage(
+                                //     'assets/images/profile image.jpg'),
+                                minRadius: 20,
+                                maxRadius: 30,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 50,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 60, left: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Mr. Amir',
+                                    style: GoogleFonts.manrope(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white.withOpacity(.8)),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Text('Mark Your Attendance!',
+                                      style: GoogleFonts.manrope(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white))
+                                ],
+                              ),
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Text('Mark Your Attendance!',
-                            style: GoogleFonts.manrope(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white))
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )),
+                      )),
                   Container(
-                    margin: EdgeInsets.only(left: 20, right: 20, top: 140),
-                    height: 320,
+                    margin:
+                        const EdgeInsets.only(left: 20, right: 20, top: 140),
+                    height: 350,
                     width: MediaQuery.of(context).size.width,
                     child: Card(
                         color: Colors.white,
                         child: Column(
                           children: [
-                            SizedBox(
+                            const SizedBox(
                               height: 7,
                             ),
                             GoogleFontRealTimeWidget(
@@ -87,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               isBold: true,
                             ),
                             CurrentDateTimeWidget(),
-                            SizedBox(
+                            const SizedBox(
                               height: 7,
                             ),
 
@@ -128,74 +166,79 @@ class _HomeScreenState extends State<HomeScreen> {
                             //   ),
                             // ),
 
-
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 15),
+                                  const EdgeInsets.symmetric(horizontal: 15),
                               child: Container(
                                 decoration: DottedDecoration(
                                     shape: Shape.line,
                                     linePosition: LinePosition.bottom),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 15),
+                                  const EdgeInsets.symmetric(horizontal: 15),
                               child: Row(
                                 children: [
                                   Column(
                                     children: [
                                       Container(
-                                          child: Icon(
-                                            Icons.watch_later_outlined,
-                                            size: 30,
-                                          )),
+                                          child: const Icon(
+                                        Icons.watch_later_outlined,
+                                        size: 30,
+                                      )),
                                       Text(
                                         'Check In',
                                         style: GoogleFonts.manrope(
                                             fontSize: 16,
                                             color:
-                                            Colors.black.withOpacity(.7)),
+                                                Colors.black.withOpacity(.7)),
                                       )
                                     ],
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Column(
                                     children: [
                                       Container(
-                                          child: Icon(
-                                            Icons.watch_later_outlined,
-                                            size: 30,
-                                          )),
+                                          child: const Icon(
+                                        Icons.watch_later_outlined,
+                                        size: 30,
+                                      )),
                                       Text(
                                         'Check Out',
                                         style: GoogleFonts.manrope(
                                             fontSize: 16,
                                             color:
-                                            Colors.black.withOpacity(.7)),
+                                                Colors.black.withOpacity(.7)),
                                       )
                                     ],
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Column(
                                     children: [
-                                      Container(
-                                          child: Icon(
-                                            Icons.watch_later_outlined,
-                                            size: 30,
-                                          )),
+                                      const Icon(
+                                        Icons.watch_later_outlined,
+                                        size: 30,
+                                      ),
                                       Text(
                                         'Total Hour',
                                         style: GoogleFonts.manrope(
                                             fontSize: 16,
                                             color:
-                                            Colors.black.withOpacity(.7)),
+                                                Colors.black.withOpacity(.7)),
+                                      ),
+                                      Text(
+                                        data['total_hours'].toString() ?? '',
+                                        style: GoogleFonts.manrope(
+                                            fontSize: 16,
+                                            color:
+                                                Colors.black.withOpacity(.7)),
                                       )
                                     ],
                                   )
@@ -221,12 +264,28 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => MyAttendance()));
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const MyAttendance()));
                               },
-                              child: Text('Attendance', style: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 20, color: Colors.black.withOpacity(0.7)),)),
-                          Text('Current Month', style: GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 18, color: Colors.black.withOpacity(0.5)),),
-                          SizedBox(
+                              child: Text(
+                                'Attendance',
+                                style: GoogleFonts.manrope(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 20,
+                                    color: Colors.black.withOpacity(0.7)),
+                              )),
+                          Text(
+                            'Current Month',
+                            style: GoogleFonts.manrope(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: Colors.black.withOpacity(0.5)),
+                          ),
+                          const SizedBox(
                             height: 20,
                           ),
                           Row(
@@ -237,31 +296,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {},
                                 mainText: '05',
                                 subText: 'Absents',
-                                decorationColor: Color(0xffF2F2F2),
-                                shadowColor: Color(0xff6D5CE7),
+                                decorationColor: const Color(0xffF2F2F2),
+                                shadowColor: const Color(0xff6D5CE7),
                                 maintextColor: Colors.deepPurple,
                                 subtextColor: Colors.purple,
                               ),
                             ],
                           ),
-                          SizedBox(height: 15,),
+                          const SizedBox(
+                            height: 15,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AttendanceElements(onPressed: () {},mainText: '03',
+                              AttendanceElements(
+                                  onPressed: () {},
+                                  mainText: '03',
                                   subText: 'Late In',
-                                  decorationColor: Color(0xffFFECED),
-                                  shadowColor: Color(0xffF10E0C),
-                                  maintextColor: Color(0xffEF332A),
-                                  subtextColor: Color(0xffF65E62)),
+                                  decorationColor: const Color(0xffFFECED),
+                                  shadowColor: const Color(0xffF10E0C),
+                                  maintextColor: const Color(0xffEF332A),
+                                  subtextColor: const Color(0xffF65E62)),
                               AttendanceElements(
                                 onPressed: () {},
                                 mainText: '05',
-                                subText: 'Total leaves',
-                                decorationColor: Color(0xffFDF0DF),
-                                shadowColor: Color(0xffCD7513),
-                                maintextColor: Color(0xffC59056),
-                                subtextColor: Color(0xffC59056),
+                                subText: 'Total ',
+                                decorationColor: const Color(0xffFDF0DF),
+                                shadowColor: const Color(0xffCD7513),
+                                maintextColor: const Color(0xffC59056),
+                                subtextColor: const Color(0xffC59056),
                               ),
                             ],
                           ),
@@ -271,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-              MyTeamMemberCard(),
+              const MyTeamMemberCard(),
             ],
           ),
         ));
