@@ -5,23 +5,21 @@ import 'package:glaxit_portal/ui/my%20leaves/my_leaves.dart';
 import 'package:glaxit_portal/ui/my%20profile/my_profile.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({Key? key}) : super(key: key);
+  const BottomNavBar({super.key});
 
   @override
-  _BottomNavBarState createState() =>
-      _BottomNavBarState();
+  // ignore: library_private_types_in_public_api
+  _BottomNavBarState createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State {
   int _selectedTab = 0;
 
-  List _pages = [
+  final List _pages = [
     const HomeScreen(),
     const MyAttendance(),
-          MyLeaves(),
+    MyLeaves(),
     const MyProfile(),
-
-
   ];
 
   _changeTab(int index) {
@@ -39,9 +37,11 @@ class _BottomNavBarState extends State {
         onTap: (index) => _changeTab(index),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(icon: Icon(Icons.account_balance_outlined), label: "My Attendance"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance_outlined),
+              label: "My Attendance"),
           BottomNavigationBarItem(
               icon: Icon(Icons.leave_bags_at_home), label: "My Leaves"),
           BottomNavigationBarItem(

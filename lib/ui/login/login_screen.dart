@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:glaxit_portal/constant/base_url.dart';
 import 'package:glaxit_portal/modals/user_login.dart';
 import 'package:glaxit_portal/ui/home/home_screen.dart';
 import 'package:glaxit_portal/widgets/bottom%20navigation%20bar/bottom_nav_bar.dart';
@@ -29,16 +30,16 @@ class _LoginScreenState extends State<LoginScreen> {
       'Accept': 'application/json',
       'Accept': 'application/javascript'
     };
-    final response = await http.post(
-        Uri.parse('https://g-portal.realtechcrm.online/api_user/login.php'),
-        headers: headers,
-        body: {
-          'em-login-email': 'abc@gmail.com',
-          // _emailController.text,
-          'em-login-password': 'john@realtechcrm'
+    final response = await http
+        .post(Uri.parse('$APP_BASE_URL/login.php'), headers: headers, body: {
+      'em-login-email': 'abc@gmail.com',
+      // _emailController.text,
+      'em-login-password': 'john@realtechcrm'
 
-          // _passwordController.text,
-        });
+      // _passwordController.text,
+    });
+    print(response);
+
     final data = jsonDecode(response.body);
     final statusCode = data['status'];
     if (statusCode == 'success') {
