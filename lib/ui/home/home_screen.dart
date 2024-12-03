@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'authorization': 'Bearer 8605c8a9bcd8914021369a887f164fad',
         },
       );
-      if (response?.statusCode == 200) {
+      if (response.statusCode == 200) {
         var body = jsonDecode(response.body);
         data = body['data'];
       }
@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
       });
     }
+    return null;
   }
 
   Future<List<UserCheckInRecord>?> getRecords() async {
