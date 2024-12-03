@@ -1,1 +1,1 @@
-final String APP_BASE_URL = 'https://g-portal.realtechcrm.online/api';
+final String APP_BASE_URL = 'APP_BASE_URL';
